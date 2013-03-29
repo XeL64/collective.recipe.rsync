@@ -12,12 +12,19 @@ _LOG = logging.getLogger("rsync")
 line = ('-----------------------------------' +
         '-----------------------------------')
 
-def rsync(source=None, target=None, port=None):
+def rsync(source=None, target=None, port=None, rsync_opt=None):
+    cmd = ['rsync']
     if port:
-        cmd = ['rsync', '-e', 'ssh -p %s' % port, '-av', '--partial',
-            '--progress', source, target]
+        cmd.extend(['-e', 'ssh -p %s' % port])
+        for opts in rsync_opt.split():
+            cmd.append(opts)
+        cmd.extend([source, target])
+        print cmd
     else:
-        cmd = ['rsync', '-av', '--partial', '--progress', source, target]
+        for opts in rsync_opt.split():
+            cmd.append(opts)
+        cmd.extend([source, target])
+
     _LOG.info(line)
     _LOG.info('Running rsync with command: ')
     _LOG.info('  $ %s' % ' '.join(cmd))
@@ -25,6 +32,9 @@ def rsync(source=None, target=None, port=None):
     _LOG.info(line)
     subprocess.call(cmd)
     _LOG.info('Done.')
+
+#def rsync(source=None, target=None, port=None, rsync_opt=None):
+#    cmd = ["rsync","--verbose --archive","./test_rsync
 
 
 class Recipe(object):
@@ -34,8 +44,11 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         self.source = options['source']
         self.target = options['target']
+        self.rsync_opt = "--verbose --archive --partial --progress"
         self.port = None
         self.script = False
+        if 'rsync_opt' in options:
+            self.rsync_opt = options['rsync_opt']
         if 'port' in options:
             self.port = options['port']
         if 'script' in options:
@@ -56,7 +69,7 @@ class Recipe(object):
         else:
             # if we make it this far, script option is not set so we execute
             # as buildout runs
-            rsync(source=self.source, target=self.target, port=self.port)
+            rsync(source=self.source, rsync_opt=self.rsync_opt, target=self.target, port=self.port)
             return tuple()
 
     def update(self):
