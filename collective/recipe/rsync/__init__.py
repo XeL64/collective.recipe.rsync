@@ -60,11 +60,10 @@ class Recipe(object):
         """Installer"""
         if self.script:
             bindir = self.buildout['buildout']['bin-directory']
-            arguments = "source='%s', target='%s', port='%s'"
+            arguments = "rsync_opt='%s', source='%s', target='%s', port='%s'"
             create_script(
                 [('%s' % self.name, 'collective.recipe.rsync.__init__', 'rsync')],
-                working_set, executable, bindir, arguments=arguments % (
-                self.source, self.target, self.port))
+                working_set, executable, bindir, arguments=arguments % (self.rsync_opt, self.source, self.target, self.port))
             return tuple((bindir + '/' + 'rsync',))
         else:
             # if we make it this far, script option is not set so we execute
