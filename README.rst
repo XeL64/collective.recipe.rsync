@@ -61,5 +61,22 @@ You can specify files to ignore with the ignore option::
     target = ${buildout:directory}/var/filestorage
     ignore = index old
 
+
+Define arguments for rsync yourself
+~~~~~~~~~~~~
+
+You can specify arguments for rsync::
+
+.. Note::
+Default arguments are : ``--verbose --archive --partial --progress``
+
+    [rsync]
+    recipe = collective.recipe.rsync
+    source = remotehost:/var/filestorage/
+    target = ${buildout:directory}/var/filestorage
+    rsync_opt = --verbose --archive --delete --on-file-system
+
+Remember that when you define manualy arguments in ``rsync_opt``, the default one are erased.
+
 .. _`zc.buildout`: http://pypi.python.org/pypi/zc.buildout
 .. _`z3c.recipe.usercrontab`: http://pypi.python.org/pypi/z3c.recipe.usercrontab
