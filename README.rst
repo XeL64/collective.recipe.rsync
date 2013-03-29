@@ -66,9 +66,7 @@ Define arguments for rsync yourself
 ~~~~~~~~~~~~
 
 You can specify arguments for rsync::
-
-.. Note::
-Default arguments are : ``--verbose --archive --partial --progress``
+Default arguments are : ``--verbose --archive --partial --progress``::
 
     [rsync]
     recipe = collective.recipe.rsync
